@@ -13,14 +13,9 @@ pong130_op.py
 pong130_eval.py
 ```
 效果：  
-<<<<<<< HEAD
-![alt text](images/image.png)   
-gif在results\Pong-v0\pong130_2\evaluate.gif中    
-=======
-![alt text](images/image.png)
+![alt text](images/image.png)  
 gif在results\Pong-v0\pong130_2\evaluate.gif中  
 
->>>>>>> cc367221b5d4d05bf962464d373aa7e58c714511
 ![alt text](https://github.com/wild-firefox/FreeRL_for_play/blob/main/first_game_pong/results/Pong-v0/pong130_2/evaluate.gif)
 
 ---
