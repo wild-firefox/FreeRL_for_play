@@ -3,3 +3,5 @@
 /first_game_pong/REINFORCE_cnn.py
 /first_game_pong/__pycache__
 /env_test.ipynb
+/play_FlappyBird/__pycache__
+/play_FlappyBird/env_test.ipynb
