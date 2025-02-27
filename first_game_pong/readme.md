@@ -14,9 +14,9 @@ pong130_eval.py
 ```
 效果：  
 ![alt text](images/image.png)
+gif在results\Pong-v0\pong130_2\evaluate.gif中  
 
-
-![alt text](results\Pong-v0\pong130_2\evaluate.gif)
+![alt text](https://github.com/wild-firefox/FreeRL_for_play/blob/main/first_game_pong/results/Pong-v0/pong130_2/evaluate.gif)
 
 ---
 这里的REINFORCE和PPO算法均修改自自写库：  [https://github.com/wild-firefox/FreeRL](https://github.com/wild-firefox/FreeRL)  
