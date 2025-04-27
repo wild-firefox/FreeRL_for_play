@@ -42,9 +42,14 @@ done = False
 
 prev_x = None
 frames = []
+skip_frame = 4 # 每4帧取1帧
+episode_reward = 0
+step = 0
 while not done:
-    frame = env.render()
-    frames.append(frame)
+    step += 1
+    if step % skip_frame == 0:
+      frame = env.render()
+      frames.append(frame)
     cur_x = prepro(observation)
     x = cur_x - prev_x if prev_x is not None else np.zeros(D)
     prev_x = cur_x
@@ -52,6 +57,7 @@ while not done:
     action = 2 if aprob >= 0.5 else 3 # 使用 aprob 的值来决定动作
     #action = env.action_space.sample()  # 随机选择动作
     observation, reward, terminated, truncated, info = env.step(action)
+    episode_reward += reward
     if reward != 0:
         print(f"Reward: {reward} ,{terminated} ,  {truncated} ")  # 仅在奖励非零时输出
     if terminated or truncated:
@@ -60,4 +66,5 @@ while not done:
         print("Reset")
 env.close()
 
-imageio.mimsave(os.path.join(model_dir,"evaluate.gif"),frames,duration=1/30)
+print(f"Episode reward: {episode_reward}")
+imageio.mimsave(os.path.join(model_dir,"evaluate.gif"),frames,duration=1/40)
