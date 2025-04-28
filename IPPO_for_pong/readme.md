@@ -33,6 +33,10 @@ logdir后选择你的logdir
 tensorboard --logdir=IPPO_for_pong/results/pong_v3/IPPO_22
 ```
 
+## 伪代码
+md伪代码见：IPPO_for_pong/伪代码.md  
+latex伪代码见：IPPO_for_pong/IPPO_pseudocode.tex
+
 ## 最终效果展示
 
 <img src="results/pong_v3/IPPO_22/pong_animation_20250426_145439.gif">

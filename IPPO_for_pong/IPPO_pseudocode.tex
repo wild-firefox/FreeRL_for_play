@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath, amssymb}
+\usepackage{CJKutf8}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{booktabs} % 用于更美观的表格
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\title{IPPO算法伪代码}
+\author{}
+\date{}
+\maketitle
+
+\begin{algorithm}
+\caption{IPPO (Independent Proximal Policy Optimization)}
+\begin{algorithmic}[1]
+\State \textbf{初始化：}
+\For{每个智能体 $i \in \{1, 2, \ldots, n\}$}
+    \State 初始化策略参数 $\theta_i$
+    \State 初始化价值函数参数 $\phi_i$
+    \State 创建经验回放缓冲区 $D_i$
+\EndFor
+
+\State \textbf{参数：} 小批量大小 minibatch\_size, 折扣因子 $\gamma$, GAE参数 $\lambda$, 裁剪参数 $\varepsilon$, 策略更新轮数 $K$, 熵系数 $\beta$
+
+\State \textbf{训练循环:}
+\For{$\text{episode} = 1, 2, \ldots$}
+    \State 重置环境，获取初始观察 $o = \{o^1, o^2, \ldots, o^n\}$
+    
+    \For{$t = 1, 2, \ldots$ 直到终止}
+        \For{每个智能体 $i$}
+            \State 基于策略 $\pi_i(a_i|o_i;\theta_i)$ 选择动作 $a_i$
+            \State 记录动作概率 $p_i = \pi_i(a_i|o_i;\theta_i)$
+        \EndFor
+        
+        \State 将动作集合 $a = \{a^1, a^2, \ldots, a^n\}$ 发送到环境
+        \State 获取奖励 $r = \{r^1, r^2, \ldots, r^n\}$, 新观察 $o' = \{o'^1, o'^2, \ldots, o'^n\}$ 和终止信号 done
+        
+        \For{每个智能体 $i$}
+            \State 将 $(o_i, a_i, r_i, o'_i, \text{done}, p_i)$ 存储到 $D_i$ 中
+            \State $o_i \leftarrow o'_i$
+        \EndFor
+    \EndFor
+
+    \If{满足更新条件}
+        \For{每个智能体 $i$}
+            \State \textbf{计算优势估计:}
+            \State 从 $D_i$ 中提取经验 $\{(o_{i,j}, a_{i,j}, r_{i,j}, o'_{i,j}, \text{done}_j, p_{i,j})\}_{j=1}^T$
+            \State 使用GAE计算优势估计值 $\hat{A}_{i,j}$
+            \State 归一化优势估计 $\hat{A}_{i,j} \leftarrow \frac{\hat{A}_{i,j} - \mu(\hat{A}_i)}{\sigma(\hat{A}_i)}$
+            \State 计算目标值函数 $\hat{V}^{\text{target}} = \hat{A}_i + V(o_i)$
+            
+            \State \textbf{进行$K$轮策略优化:}
+            \For{$k = 1, 2, \ldots, K$}
+                \State 随机打乱经验顺序并分成小批量
+                \For{每个小批量}
+                    \State \textbf{策略网络更新:}
+                    \State 计算新策略概率 $\pi'_i(a_i|o_i;\theta_i)$
+                    \State 计算比率 $r_i(\theta_i) = \frac{\pi'_i(a_i|o_i;\theta_i)}{p_{i,j}}$
+                    \State 计算裁剪目标 $L^{\text{CLIP}} = \min\left(r_i(\theta_i) \cdot \hat{A}_{i,j}, \text{clip}(r_i(\theta_i), 1-\varepsilon, 1+\varepsilon) \cdot \hat{A}_{i,j}\right)$
+                    \State 计算熵奖励 $S[\pi_i](o_i)$
+                    \State 最大化目标： $J(\theta_i) = \mathbb{E}[L^{\text{CLIP}} - \beta \cdot S[\pi_i](o_i)]$
+                    \State 更新策略参数 $\theta_i$
+
+                    \State \textbf{价值网络更新:}
+                    \State 计算价值损失 $L^{\text{VF}} = (V(o_i;\phi_i) - \hat{V}^{\text{target}})^2$ 或 Huber损失
+                    \If{使用ValueClip}
+                        \State 计算裁剪价值 $V_{\text{clip}} = V_{\text{old}} + \text{clip}(V(o_i;\phi_i) - V_{\text{old}}, -\varepsilon, \varepsilon)$
+                        \State 价值损失 $L^{\text{VF}} = \max(L^{\text{VF}}, (V_{\text{clip}} - \hat{V}^{\text{target}})^2)$
+                    \EndIf
+                    \State 最小化 $L^{\text{VF}}$ 更新价值参数 $\phi_i$
+                \EndFor
+            \EndFor
+            
+            \State 清空经验回放缓冲区 $D_i$
+        \EndFor
+    \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\end{CJK}
+\end{document}
