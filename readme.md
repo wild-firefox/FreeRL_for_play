@@ -11,6 +11,7 @@ FreeRL : [https://github.com/wild-firefox/FreeRL](https://github.com/wild-firefo
 
 项目2：play_FlappyBird 效果  
 
+见play_FlappyBird/videos/flappybird_test.mp4
 <video controls width="600">
     <source src="play_FlappyBird/videos/flappybird_test.mp4" type="video/mp4">
     Your browser does not support the video tag.
